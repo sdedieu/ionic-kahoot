@@ -18,22 +18,15 @@ import { QuizCard } from '../components/quiz.card';
 import { addIcons } from 'ionicons';
 import { add } from 'ionicons/icons';
 import { CreateQuizModal } from '../modals/create-quiz.modal';
+import { PageHeader } from '../components/page-header';
 
 @Component({
   selector: 'quiz-list',
   template: `
-    <ion-header [translucent]="true">
-      <ion-toolbar>
-        <ion-title> Home </ion-title>
-      </ion-toolbar>
-    </ion-header>
+    <page-header [translucent]="true">Home</page-header>
 
     <ion-content [fullscreen]="true">
-      <ion-header collapse="condense">
-        <ion-toolbar>
-          <ion-title size="large">Home</ion-title>
-        </ion-toolbar>
-      </ion-header>
+      <page-header collapse="condense">Home</page-header>
 
       <div id="container">
         @let quizzes = this.quizzes.value();
@@ -61,9 +54,6 @@ import { CreateQuizModal } from '../modals/create-quiz.modal';
   `,
   styles: [``],
   imports: [
-    IonHeader,
-    IonToolbar,
-    IonTitle,
     IonContent,
     IonGrid,
     IonRow,
@@ -72,6 +62,7 @@ import { CreateQuizModal } from '../modals/create-quiz.modal';
     IonFab,
     IonFabButton,
     IonIcon,
+    PageHeader,
   ],
 })
 export class QuizListPage {

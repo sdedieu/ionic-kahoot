@@ -30,18 +30,9 @@ export const routes: Routes = [
         loadComponent: () => import('./quiz/quiz.page').then((m) => m.QuizPage),
       },
       {
-        path: 'games',
-        loadComponent: () =>
-          import('./game/game-list.page').then((m) => m.GameListPage),
-      },
-      {
         path: 'join-game',
         loadComponent: () =>
           import('./game/join-game.page').then((m) => m.JoinGamePage),
-      },
-      {
-        path: 'game/:gameId',
-        loadComponent: () => import('./game/game.page').then((m) => m.GamePage),
       },
       {
         path: '',

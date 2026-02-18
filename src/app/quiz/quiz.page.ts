@@ -45,6 +45,7 @@ import {
 import { Router, RouterLink } from '@angular/router';
 import { Quiz } from '../models/quiz';
 import { CreateQuizModal } from '../modals/create-quiz.modal';
+import { PageHeader } from '../components/page-header';
 
 @Component({
   selector: 'quiz-options-popover',
@@ -158,22 +159,23 @@ export class QuizPageToolbar {
   selector: 'quiz',
   template: `
     @let quiz = this.quiz();
-    <ion-header [translucent]="true">
+
+    <page-header [translucent]="true">
       <quiz-page-toolbar
         [quizForm]="quizForm"
         (delete)="deleteQuiz()"
         (edit)="editQuiz()"
       />
-    </ion-header>
+    </page-header>
 
     <ion-content [fullscreen]="true">
-      <ion-header collapse="condense">
+      <page-header collapse="condense">
         <quiz-page-toolbar
           [quizForm]="quizForm"
           (delete)="deleteQuiz()"
           (edit)="editQuiz()"
         />
-      </ion-header>
+      </page-header>
 
       <div id="container">
         <ion-list lines="none">
@@ -197,7 +199,6 @@ export class QuizPageToolbar {
   `,
   styles: [``],
   imports: [
-    IonHeader,
     IonContent,
     IonTextarea,
     IonList,
@@ -205,6 +206,7 @@ export class QuizPageToolbar {
     IonLabel,
     Field,
     QuizPageToolbar,
+    PageHeader,
   ],
 })
 export class QuizPage {

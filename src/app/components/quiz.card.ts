@@ -1,4 +1,4 @@
-import { Component, inject, input } from '@angular/core';
+import { Component, input } from '@angular/core';
 import {
   IonCard,
   IonCardHeader,
@@ -9,11 +9,10 @@ import {
   IonIcon,
 } from '@ionic/angular/standalone';
 import { Quiz } from '../models/quiz';
-import { Router, RouterLink } from '@angular/router';
+import { RouterLink } from '@angular/router';
 import { TitleCasePipe } from '@angular/common';
 import { playOutline } from 'ionicons/icons';
 import { addIcons } from 'ionicons';
-import { GameService } from '../services/game.service';
 
 @Component({
   selector: 'quiz-card',
@@ -53,9 +52,6 @@ import { GameService } from '../services/game.service';
 export class QuizCard {
   readonly quiz = input.required<Quiz>();
 
-  private readonly gameService = inject(GameService);
-  private readonly router = inject(Router);
-
   constructor() {
     addIcons({ playOutline });
   }
@@ -63,8 +59,5 @@ export class QuizCard {
   async createGame(event: MouseEvent) {
     event.stopPropagation();
     event.preventDefault();
-
-    const { id } = await this.gameService.create(this.quiz().id);
-    this.router.navigateByUrl(`/game/${id}`);
   }
 }
