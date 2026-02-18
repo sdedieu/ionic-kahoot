@@ -32,7 +32,7 @@ import {
   PopoverController,
   IonPopover,
 } from '@ionic/angular/standalone';
-import { QuizService } from '../services/quiz';
+import { QuizService } from '../services/quiz.service';
 
 import { addIcons } from 'ionicons';
 import {
@@ -104,10 +104,10 @@ export class QuizOptionsPopover {
           <ion-icon name="ellipsis-vertical-outline"></ion-icon>
         </ion-button>
 
-        @if(quizForm()().dirty()) {
-        <ion-button form="quizForm" type="submit">
-          Save <ion-icon slot="end" name="save-outline"></ion-icon>
-        </ion-button>
+        @if (quizForm()().dirty()) {
+          <ion-button form="quizForm" type="submit">
+            Save <ion-icon slot="end" name="save-outline"></ion-icon>
+          </ion-button>
         }
       </ion-buttons>
     </ion-toolbar>
@@ -187,9 +187,9 @@ export class QuizPageToolbar {
         </ion-list>
         <ion-list lines="none">
           @for (question of quiz.questions; track $index) {
-          <ion-item>
-            <ion-label>{{ question.text }} </ion-label>
-          </ion-item>
+            <ion-item>
+              <ion-label>{{ question.text }} </ion-label>
+            </ion-item>
           }
         </ion-list>
       </div>

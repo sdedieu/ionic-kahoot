@@ -12,16 +12,15 @@ import {
   IonFabButton,
   IonIcon,
   ModalController,
-  IonButton,
 } from '@ionic/angular/standalone';
-import { QuizService } from '../services/quiz';
+import { QuizService } from '../services/quiz.service';
 import { QuizCard } from '../components/quiz.card';
 import { addIcons } from 'ionicons';
 import { add } from 'ionicons/icons';
 import { CreateQuizModal } from '../modals/create-quiz.modal';
 
 @Component({
-  selector: 'home',
+  selector: 'quiz-list',
   template: `
     <ion-header [translucent]="true">
       <ion-toolbar>
@@ -41,14 +40,14 @@ import { CreateQuizModal } from '../modals/create-quiz.modal';
         <ion-grid>
           <ion-row class="ion-justify-content-center ion-align-items-center">
             @for (quiz of quizzes; track quiz.id) {
-            <ion-col>
-              <quiz-card [quiz]="quiz" />
-            </ion-col>
+              <ion-col>
+                <quiz-card [quiz]="quiz" />
+              </ion-col>
             } @empty {
-            <ion-col class="ion-text-center">
-              No quiz created yet,
-              <a (click)="openCreateQuizModal()">Create your first one</a>
-            </ion-col>
+              <ion-col class="ion-text-center">
+                No quiz created yet,
+                <a (click)="openCreateQuizModal()">Create your first one</a>
+              </ion-col>
             }
           </ion-row>
         </ion-grid>
@@ -75,7 +74,7 @@ import { CreateQuizModal } from '../modals/create-quiz.modal';
     IonIcon,
   ],
 })
-export class HomePage {
+export class QuizListPage {
   private readonly quizService = inject(QuizService);
   private readonly modalCtrl = inject(ModalController);
 

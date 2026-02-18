@@ -24,50 +24,6 @@ import {
   getDocs,
 } from '@angular/fire/firestore';
 
-const mockedQuizzes: Quiz[] = [
-  {
-    id: 'quiz1',
-    title: 'Sample Quiz',
-    description: 'This is a sample quiz description.',
-    questions: [
-      {
-        id: 'q1',
-        text: 'What is the capital of France?',
-        choices: [
-          { id: 'c1', text: 'Berlin' },
-          { id: 'c2', text: 'Madrid' },
-          { id: 'c3', text: 'Paris' },
-          { id: 'c4', text: 'Rome' },
-        ],
-        correctChoiceId: 'c3',
-      },
-      {
-        id: 'q2',
-        text: 'What is 2 + 2?',
-        choices: [
-          { id: 'c1', text: '3' },
-          { id: 'c2', text: '4' },
-          { id: 'c3', text: '5' },
-          { id: 'c4', text: '22' },
-        ],
-        correctChoiceId: 'c2',
-      },
-    ],
-  },
-  {
-    id: 'quiz2',
-    title: 'Another Sample Quiz',
-    description: 'This is another sample quiz description.',
-    questions: [],
-  },
-  {
-    id: 'quiz3',
-    title: 'Another Quiz',
-    description: 'This is another quiz description.',
-    questions: [],
-  },
-];
-
 @Injectable({
   providedIn: 'root',
 })
@@ -91,11 +47,11 @@ export class QuizService {
               map((count) => ({
                 ...quiz,
                 questionsCount: count,
-              }))
-            )
-          )
-        )
-      )
+              })),
+            ),
+          ),
+        ),
+      ),
     );
   }
 
@@ -110,7 +66,7 @@ export class QuizService {
 
     return quizData.pipe(
       switchMap((quiz) => this.assembleQuiz(quiz)),
-      tap(console.log)
+      tap(console.log),
     ) as Observable<Quiz>;
   }
 
@@ -120,40 +76,13 @@ export class QuizService {
         collection(doc(this.firestore, `quizzes/${quiz.id}`), 'questions'),
         {
           idField: 'id',
-        }
+        },
       ) as Observable<Question[]>
     ).pipe(
-      mergeMap((questions) =>
-        combineLatest(
-          questions.map((question) => this.assembleQuestion(quiz.id, question))
-        )
-      ),
       map((questions) => ({
         ...quiz,
         questions: questions,
-      }))
-    );
-  }
-
-  private assembleQuestion(
-    quizId: string,
-    question: Question
-  ): Observable<Question> {
-    return (
-      collectionData(
-        collection(
-          doc(this.firestore, `quizzes/${quizId}/questions/${question.id}`),
-          'choices'
-        ),
-        {
-          idField: 'id',
-        }
-      ) as Observable<Choice[]>
-    ).pipe(
-      map((choices) => ({
-        ...question,
-        choices: choices,
-      }))
+      })),
     );
   }
 
@@ -168,40 +97,16 @@ export class QuizService {
       description: quiz.description,
     });
 
-    const existingQuestions = await getDocs(collection(quizRef, 'questions'));
-
-    for (const questionSnap of existingQuestions.docs) {
-      const choicesSnap = await getDocs(
-        collection(questionSnap.ref, 'choices')
-      );
-
-      for (const choice of choicesSnap.docs) {
-        batch.delete(choice.ref);
-      }
-
-      batch.delete(questionSnap.ref);
-    }
-
     for (const question of quiz.questions) {
       const questionRef = doc(
         this.firestore,
-        `quizzes/${quiz.id}/questions/${question.id}`
+        `quizzes/${quiz.id}/questions/${question.id}`,
       );
-
-      for (const choice of question.choices) {
-        const choiceRef = doc(
-          this.firestore,
-          `quizzes/${quiz.id}/questions/${question.id}/choices/${choice.id}`
-        );
-
-        batch.set(choiceRef, {
-          text: choice.text,
-        });
-      }
 
       batch.set(questionRef, {
         text: question.text,
-        correctChoiceId: question.correctChoiceId,
+        correctChoiceIndex: question.correctChoiceIndex,
+        choices: question.choices,
       });
     }
 
@@ -221,18 +126,10 @@ export class QuizService {
     return doc(collection(quizRef, 'questions')).id;
   }
 
-  generateChoiceId(quizId: string, questionId: string): string {
-    const questionRef = doc(
-      this.firestore,
-      `quizzes/${quizId}/questions/${questionId}`
-    );
-    return doc(collection(questionRef, 'choices')).id;
-  }
-
   generateQuiz() {
     const quizId = this.generateQuizId();
     const questionId = this.generateQuestionId(quizId);
-    const correctChoiceId = this.generateChoiceId(quizId, questionId);
+    const correctChoiceIndex = 0;
     return {
       id: quizId,
       title: 'Guess the Capital City',
@@ -242,12 +139,12 @@ export class QuizService {
           id: questionId,
           text: 'What is the capital of France?',
           choices: [
-            { id: correctChoiceId, text: 'Paris' },
-            { id: this.generateChoiceId(quizId, questionId), text: 'London' },
-            { id: this.generateChoiceId(quizId, questionId), text: 'Berlin' },
-            { id: this.generateChoiceId(quizId, questionId), text: 'Madrid' },
+            { text: 'Paris' },
+            { text: 'London' },
+            { text: 'Berlin' },
+            { text: 'Madrid' },
           ],
-          correctChoiceId: correctChoiceId,
+          correctChoiceIndex,
         },
       ],
     };
